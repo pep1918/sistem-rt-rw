@@ -6,7 +6,10 @@ const userSchema = mongoose.Schema({
   password: { type: String, required: true },
   nik: { type: String, required: true, unique: true },
   address: { type: String, required: true },
-  role: { type: String, enum: ['warga', 'rt'], default: 'warga' },
+  
+  
+  role: { type: String, enum: ['warga', 'rt', 'rw'], default: 'warga' },
+  
 }, { timestamps: true });
 
 module.exports = mongoose.model('User', userSchema);

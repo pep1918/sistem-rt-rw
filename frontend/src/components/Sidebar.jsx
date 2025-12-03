@@ -40,7 +40,7 @@ const Sidebar = ({ user, onLogout }) => {
       {/* Footer (Tombol Logout) */}
       <div className="sidebar-footer">
         <button onClick={onLogout} className="btn-logout">
-          <LogOut size={20} /> <span>Keluar Aplikasi</span>
+          <LogOut size={20} /> <span>Keluar</span>
         </button>
       </div>
     </aside>
