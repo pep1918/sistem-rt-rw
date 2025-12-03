@@ -15,19 +15,22 @@ const Layout = ({ children }) => {
   };
 
   return (
+    // Class 'app-layout' ini yang mengaktifkan Flexbox (Kiri & Kanan)
     <div className="app-layout">
-      {/* Panel 1: Sidebar Kiri */}
+      
+      {/* Panel Kiri */}
       <Sidebar user={user} onLogout={handleLogout} />
 
+      {/* Panel Kanan (Header + Isi) */}
       <div className="main-wrapper">
-        {/* Panel 2: Header Atas */}
         <Header user={user} />
-
-        {/* Panel 3: Konten Utama (Scrollable) */}
+        
+        {/* Konten Utama yang bisa di-scroll */}
         <main className="content-area">
           {children}
         </main>
       </div>
+
     </div>
   );
 };

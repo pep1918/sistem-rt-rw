@@ -1,47 +1,46 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, FileText, AlertTriangle, LogOut, Building } from 'lucide-react';
+import { LayoutDashboard, FileText, AlertTriangle, DollarSign, Megaphone, LogOut, Hexagon } from 'lucide-react';
 
 const Sidebar = ({ user, onLogout }) => {
   return (
     <aside className="sidebar">
-      {/* Sidebar Header */}
+      {/* Header Sidebar */}
       <div className="sidebar-header">
-        <Building size={24} style={{ marginRight: '10px', color: '#818cf8' }} />
-        <span>SISTEM RT/RW</span>
+        <div style={{background: 'linear-gradient(135deg, #6366f1, #a855f7)', padding:'8px', borderRadius:'10px', display:'flex'}}>
+            <Hexagon size={24} color="white" fill="white" fillOpacity={0.2} />
+        </div>
+        <div className="brand-text">SISTEM RT/RW</div>
       </div>
 
       {/* Menu List */}
       <div className="sidebar-menu">
-        <small style={{ paddingLeft: '16px', color: '#64748b', textTransform: 'uppercase', fontSize: '0.7rem', fontWeight: 'bold' }}>Menu Utama</small>
-        
+        <div className="menu-label">Menu Utama</div>
         <NavLink to="/" className={({ isActive }) => isActive ? "menu-item active" : "menu-item"}>
-          <LayoutDashboard size={20} />
-          <span>Dashboard</span>
+          <LayoutDashboard size={20} /> <span>Dashboard</span>
         </NavLink>
-
         {user?.role === 'warga' && (
           <NavLink to="/request" className={({ isActive }) => isActive ? "menu-item active" : "menu-item"}>
-            <FileText size={20} />
-            <span>Ajukan Surat</span>
+            <FileText size={20} /> <span>Ajukan Surat</span>
           </NavLink>
         )}
-
         <NavLink to="/complaints" className={({ isActive }) => isActive ? "menu-item active" : "menu-item"}>
-          <AlertTriangle size={20} />
-          <span>Lapor Masalah</span>
+          <AlertTriangle size={20} /> <span>Lapor Masalah</span>
+        </NavLink>
+
+        <div className="menu-label">Keuangan & Info</div>
+        <NavLink to="/finance" className={({ isActive }) => isActive ? "menu-item active" : "menu-item"}>
+          <DollarSign size={20} /> <span>Keuangan</span>
+        </NavLink>
+        <NavLink to="/announcements" className={({ isActive }) => isActive ? "menu-item active" : "menu-item"}>
+          <Megaphone size={20} /> <span>Portal Berita</span>
         </NavLink>
       </div>
 
-      {/* Footer Sidebar (Logout) */}
-      <div style={{ padding: '20px', borderTop: '1px solid #334155' }}>
-        <button 
-          onClick={onLogout} 
-          className="menu-item" 
-          style={{ width: '100%', background: 'transparent', border: 'none', cursor: 'pointer', color: '#ef4444' }}
-        >
-          <LogOut size={20} />
-          <span>Keluar Aplikasi</span>
+      {/* Footer (Tombol Logout) */}
+      <div className="sidebar-footer">
+        <button onClick={onLogout} className="btn-logout">
+          <LogOut size={20} /> <span>Keluar Aplikasi</span>
         </button>
       </div>
     </aside>

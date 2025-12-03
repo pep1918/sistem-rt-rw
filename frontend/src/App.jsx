@@ -8,8 +8,8 @@ import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import RequestLetter from './pages/RequestLetter';
 import Complaints from './pages/Complaints';
-
-// Layout Component Baru
+import Finance from './pages/Finance';
+import Announcements from './pages/Announcements';
 import Layout from './components/Layout';
 
 // Proteksi Route
@@ -41,6 +41,9 @@ function App() {
         <Route path="/complaints" element={
            <PrivateRoute><Complaints /></PrivateRoute>
         } />
+        <Route path="/finance" element={<PrivateRoute><Finance /></PrivateRoute>} />
+        <Route path="/announcements" element={<PrivateRoute><Announcements /></PrivateRoute>} />
+
         
       </Routes>
     </Router>
