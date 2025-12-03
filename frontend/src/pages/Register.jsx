@@ -4,17 +4,27 @@ import { useNavigate, Link } from 'react-router-dom';
 
 const Register = () => {
   const [formData, setFormData] = useState({ name: '', email: '', password: '', nik: '', address: '', role: 'warga' });
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => setFormData({...formData, [e.target.name]: e.target.value});
 
   const handleRegister = async (e) => {
     e.preventDefault();
+    setLoading(true); // Tampilkan loading
     try {
+      // Pastikan URL backend benar
       await axios.post('http://localhost:5000/api/auth/register', formData);
       alert('Berhasil! Silakan Login');
       navigate('/login');
-    } catch (error) { alert('Gagal Daftar'); }
+    } catch (error) {
+      console.error(error);
+      // MENAMPILKAN PESAN ERROR ASLI DARI SERVER
+      const message = error.response?.data?.message || 'Gagal menghubungi server (Cek Terminal Backend)';
+      alert(`Gagal Daftar: ${message}`);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -34,7 +44,9 @@ const Register = () => {
               <option value="rt">Ketua RT</option>
             </select>
           </div>
-          <button className="btn btn-primary" style={{width:'100%'}}>Daftar Sekarang</button>
+          <button className="btn btn-primary" style={{width:'100%'}} disabled={loading}>
+            {loading ? 'Sedang Memproses...' : 'Daftar Sekarang'}
+          </button>
         </form>
         <p style={{textAlign:'center', marginTop:'15px', fontSize:'0.9rem'}}>Sudah punya akun? <Link to="/login">Login</Link></p>
       </div>
