@@ -1,19 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom'; // Kita pakai useNavigate untuk pindah halaman
 import { Hexagon, UserPlus, MapPin, CreditCard, Mail, Lock, User } from 'lucide-react';
 
 const Register = () => {
   const [formData, setFormData] = useState({ 
-    name: '', 
-    email: '', 
-    password: '', 
-    nik: '', 
-    address: '', 
-    role: 'warga' 
+    name: '', email: '', password: '', nik: '', address: '', role: 'warga' 
   });
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  // 1. FITUR AUTO CLEAR: Kosongkan form saat halaman dibuka
+  useEffect(() => {
+    setFormData({ name: '', email: '', password: '', nik: '', address: '', role: 'warga' });
+  }, []);
 
   const handleChange = (e) => setFormData({...formData, [e.target.name]: e.target.value});
 
@@ -22,138 +22,133 @@ const Register = () => {
     setLoading(true);
     try {
       await axios.post('http://localhost:5000/api/auth/register', formData);
-      alert('Registrasi Berhasil! Silakan Login.');
+      alert('Berhasil! Silakan Login');
       navigate('/login');
     } catch (error) {
-      const message = error.response?.data?.message || 'Gagal mendaftar.';
-      alert(`Gagal: ${message}`);
+      console.error(error);
+      const message = error.response?.data?.message || 'Gagal menghubungi server';
+      alert(`Gagal Daftar: ${message}`);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    // WRAPPER UTAMA (Perbaikan Scroll)
+    // WRAPPER UTAMA: Menggunakan Position Fixed agar menimpa style Dashboard yang bikin error
     <div style={{
-      position: 'fixed',      // Menimpa setting body dashboard
-      top: 0,
-      left: 0,
-      width: '100%',
-      height: '100%',         // Full layar
-      overflowY: 'auto',      // WAJIB: Mengaktifkan scroll vertikal
-      background: 'linear-gradient(135deg, #f1f5f9 0%, #cbd5e1 100%)',
-      zIndex: 9999,           // Pastikan di atas layer lain
-      display: 'flex',        // Gunakan flexbox
-      alignItems: 'flex-start', // Mulai dari atas (penting agar scroll jalan di HP)
-      justifyContent: 'center'
+      position: 'fixed', 
+      top: 0, 
+      left: 0, 
+      width: '100%', 
+      height: '100%', 
+      overflowY: 'auto', // INI AGAR BISA SCROLL
+      backgroundColor: '#f1f5f9', // Warna Background Abu
+      zIndex: 9999, // Pastikan di paling atas
+      display: 'flex',
+      justifyContent: 'center',
+      paddingTop: '50px',
+      paddingBottom: '50px'
     }}>
       
-      {/* KARTU TENGAH */}
       <div className="card" style={{
-        width: '100%',
+        width: '90%',
         maxWidth: '500px',
         background: 'white',
-        borderRadius: '24px',
-        boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.1)',
-        padding: '40px',
-        border: '1px solid rgba(255,255,255,0.8)',
-        // Trik margin auto pada Flexbox akan membuatnya center vertikal & horizontal
-        // tapi tetap aman saat di-scroll
-        margin: 'auto',       
-        marginTop: '40px',    // Jarak aman atas
-        marginBottom: '40px'  // Jarak aman bawah
+        borderRadius: '16px',
+        boxShadow: '0 10px 25px rgba(0,0,0,0.1)',
+        padding: '30px',
+        height: 'fit-content' // Agar tinggi menyesuaikan isi
       }}>
         
         {/* HEADER */}
-        <div style={{ textAlign: 'center', marginBottom: '30px' }}>
-          <div style={{
-            width: '60px', height: '60px',
-            background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)',
-            borderRadius: '16px',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            margin: '0 auto 15px auto',
-            boxShadow: '0 10px 15px -3px rgba(99, 102, 241, 0.3)'
-          }}>
-            <Hexagon size={32} color="white" fill="white" fillOpacity={0.2} />
-          </div>
-          <h2 style={{ fontSize: '1.8rem', fontWeight: '800', color: '#1e293b', marginBottom: '5px' }}>
-            Daftar Akun Baru
-          </h2>
-          <p style={{ color: '#64748b', fontSize: '0.95rem' }}>
-            Lengkapi data diri untuk akses layanan
-          </p>
+        <div style={{textAlign:'center', marginBottom:'30px'}}>
+            <div style={{
+                width:'50px', height:'50px', background:'#4f46e5', borderRadius:'12px', 
+                display:'flex', alignItems:'center', justifyContent:'center', margin:'0 auto 15px auto'
+            }}>
+                <Hexagon size={28} color="white" />
+            </div>
+            <h2 style={{fontSize:'1.5rem', fontWeight:'bold', color:'#1e293b'}}>Pendaftaran Warga</h2>
+            <p style={{color:'#64748b'}}>Isi data diri Anda dengan lengkap</p>
         </div>
 
-        {/* FORM */}
-        <form onSubmit={handleRegister}>
+        <form onSubmit={handleRegister} autoComplete="off">
           
-          <div className="input-group">
-            <label style={{display:'flex', alignItems:'center', gap:'8px', fontWeight:'600'}}>
-              <User size={16} color="var(--primary)"/> Nama Lengkap
-            </label>
-            <input name="name" onChange={handleChange} required placeholder="Sesuai KTP" style={{background:'#f8fafc', padding:'12px'}} />
-          </div>
-          
-          <div className="input-group">
-            <label style={{display:'flex', alignItems:'center', gap:'8px', fontWeight:'600'}}>
-              <CreditCard size={16} color="var(--primary)"/> NIK
-            </label>
-            <input name="nik" onChange={handleChange} required placeholder="16 Digit NIK" type="number" style={{background:'#f8fafc', padding:'12px'}} />
+          <div className="input-group" style={{marginBottom:'15px'}}>
+            <label style={{fontWeight:'600', display:'block', marginBottom:'5px'}}>Nama Lengkap</label>
+            <div style={{display:'flex', alignItems:'center', border:'1px solid #ccc', borderRadius:'8px', padding:'0 10px', background:'#f8fafc'}}>
+                <User size={18} color="#64748b"/>
+                <input name="name" onChange={handleChange} required placeholder="Sesuai KTP" style={{border:'none', width:'100%', padding:'10px', background:'transparent', outline:'none'}} />
+            </div>
           </div>
 
-          <div className="input-group">
-            <label style={{display:'flex', alignItems:'center', gap:'8px', fontWeight:'600'}}>
-              <Mail size={16} color="var(--primary)"/> Email Aktif
-            </label>
-            <input type="email" name="email" onChange={handleChange} required placeholder="email@contoh.com" style={{background:'#f8fafc', padding:'12px'}} />
+          <div className="input-group" style={{marginBottom:'15px'}}>
+            <label style={{fontWeight:'600', display:'block', marginBottom:'5px'}}>NIK</label>
+            <div style={{display:'flex', alignItems:'center', border:'1px solid #ccc', borderRadius:'8px', padding:'0 10px', background:'#f8fafc'}}>
+                <CreditCard size={18} color="#64748b"/>
+                <input name="nik" onChange={handleChange} required placeholder="16 Digit NIK" style={{border:'none', width:'100%', padding:'10px', background:'transparent', outline:'none'}} />
+            </div>
           </div>
 
-          <div className="input-group">
-            <label style={{display:'flex', alignItems:'center', gap:'8px', fontWeight:'600'}}>
-              <Lock size={16} color="var(--primary)"/> Password
-            </label>
-            <input type="password" name="password" onChange={handleChange} required placeholder="Minimal 6 karakter" style={{background:'#f8fafc', padding:'12px'}} />
+          <div className="input-group" style={{marginBottom:'15px'}}>
+            <label style={{fontWeight:'600', display:'block', marginBottom:'5px'}}>Email</label>
+            <div style={{display:'flex', alignItems:'center', border:'1px solid #ccc', borderRadius:'8px', padding:'0 10px', background:'#f8fafc'}}>
+                <Mail size={18} color="#64748b"/>
+                <input type="email" name="email" onChange={handleChange} required placeholder="email@contoh.com" autoComplete="off" style={{border:'none', width:'100%', padding:'10px', background:'transparent', outline:'none'}} />
+            </div>
           </div>
 
-          <div className="input-group">
-            <label style={{display:'flex', alignItems:'center', gap:'8px', fontWeight:'600'}}>
-              <MapPin size={16} color="var(--primary)"/> Alamat Lengkap
-            </label>
-            <textarea 
-              name="address" 
-              onChange={handleChange} 
-              required 
-              placeholder="Nama Jalan, No. Rumah, RT/RW..." 
-              rows="3" 
-              style={{background:'#f8fafc', padding:'12px', resize:'none'}} 
-            />
+          <div className="input-group" style={{marginBottom:'15px'}}>
+            <label style={{fontWeight:'600', display:'block', marginBottom:'5px'}}>Password</label>
+            <div style={{display:'flex', alignItems:'center', border:'1px solid #ccc', borderRadius:'8px', padding:'0 10px', background:'#f8fafc'}}>
+                <Lock size={18} color="#64748b"/>
+                <input type="password" name="password" onChange={handleChange} required placeholder="******" autoComplete="new-password" style={{border:'none', width:'100%', padding:'10px', background:'transparent', outline:'none'}} />
+            </div>
           </div>
 
-          <div className="input-group">
-            <label style={{fontWeight:'600'}}>Daftar Sebagai</label>
-            <select 
-              name="role" 
-              onChange={handleChange}
-              style={{ padding: '12px', background: '#fff', border: '2px solid #e2e8f0', cursor:'pointer', width: '100%', borderRadius: '8px' }}
-            >
+          <div className="input-group" style={{marginBottom:'15px'}}>
+            <label style={{fontWeight:'600', display:'block', marginBottom:'5px'}}>Alamat</label>
+            <div style={{display:'flex', alignItems:'start', border:'1px solid #ccc', borderRadius:'8px', padding:'10px', background:'#f8fafc'}}>
+                <MapPin size={18} color="#64748b" style={{marginTop:'3px'}}/>
+                <textarea name="address" onChange={handleChange} required placeholder="Alamat Lengkap..." rows="2" style={{border:'none', width:'100%', paddingLeft:'10px', background:'transparent', outline:'none', resize:'none'}} />
+            </div>
+          </div>
+
+          <div className="input-group" style={{marginBottom:'20px'}}>
+            <label style={{fontWeight:'600', display:'block', marginBottom:'5px'}}>Daftar Sebagai</label>
+            <select name="role" onChange={handleChange} style={{width:'100%', padding:'10px', borderRadius:'8px', border:'1px solid #ccc'}}>
               <option value="warga">Warga</option>
               <option value="rt">Ketua RT</option>
-              <option value="rw">Ketua RW</option> 
+              <option value="rw">Ketua RW</option>
             </select>
           </div>
 
           <button 
             className="btn btn-primary" 
-            style={{ width: '100%', marginTop: '20px', padding: '14px', borderRadius:'12px', fontSize:'1rem', justifyContent:'center' }}
+            style={{
+                width:'100%', padding:'12px', background:'#4f46e5', color:'white', 
+                border:'none', borderRadius:'8px', fontWeight:'bold', cursor:'pointer', fontSize:'1rem'
+            }} 
             disabled={loading}
           >
-            {loading ? 'Memproses...' : 'Daftar Sekarang'} <UserPlus size={18} style={{ marginLeft: '8px' }}/>
+            {loading ? 'Sedang Memproses...' : 'Daftar Sekarang'}
           </button>
         </form>
 
-        <p style={{ textAlign: 'center', marginTop: '25px', fontSize: '0.9rem', color: '#64748b' }}>
-          Sudah punya akun? <Link to="/login" style={{ color: 'var(--primary)', fontWeight: '700', textDecoration: 'none' }}>Masuk disini</Link>
-        </p>
+        {/* LINK LOGIN: Menggunakan BUTTON agar pasti bisa diklik */}
+        <div style={{textAlign:'center', marginTop:'20px'}}>
+            <span style={{color:'#64748b', fontSize:'0.9rem'}}>Sudah punya akun? </span>
+            <button 
+                onClick={() => navigate('/login')}
+                style={{
+                    background:'none', border:'none', color:'#4f46e5', 
+                    fontWeight:'bold', cursor:'pointer', fontSize:'0.9rem', textDecoration:'underline'
+                }}
+            >
+                Login 
+            </button>
+        </div>
+
       </div>
     </div>
   );
